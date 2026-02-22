@@ -43,3 +43,8 @@
 ## 2026-02-23 - Devam Notu
 - Method-level sozlukte context yan etkileri acik yazildi; debugger ve router ariza analizinde dogrudan kullanilabilir.
 - Sonraki derinlestirme hedefi OOP/function/type katmani.
+
+## 2026-02-23 - Coklu Ajan Tur Notu
+- OOP/function/type katmani method-level olarak haritalandi.
+- Router bagimli akislarda (`FUNCTION`/`FIELD`) context flag tutarliligi kritik olarak not edildi.
+- Stub metotlar ve imza kirilganligi sonraki teknik borc listesine alinmali.

@@ -203,3 +203,60 @@ Bu bolum PDSX kok projesi icin eklendi. Mevcut anlami degistirmez, kapsam genisl
 
 ### Not
 - Bu sozluk kod davranisina dayali cikartilmistir; metot imzalari ve yan etkiler interpreter context alanlariyla birlikte okunmalidir.
+
+---
+
+## 2026-02-23 - Paralel Derinlestirme (Function + OOP + Advanced Types)
+
+### `function_manager.py` Method Sozlugu (kritik)
+- `_call_function`: girdi=`func_name,args,context` | cikti=`Any/None` | yan etki=`local_vars` gecici scope, `function_return`/`return_value` tuketimi, satirlar `execute_statement` ile calistirilir.
+- `cmd_call`: girdi=`CALL ...` | cikti=`function/lambda sonucu veya None` | yan etki=argumanlari evaluate eder, hedefi `functions/subs/lambdas` arasinda route eder.
+- `cmd_function`: girdi=`FUNCTION ...` | cikti=`func_name` | yan etki=`self.functions` kaydi + `context['defining_function']` set.
+- `cmd_sub`: girdi=`SUB ...` | cikti=`sub_name` | yan etki=`self.subs` kaydi + `context['defining_sub']` set.
+- `_call_subroutine`: girdi=`sub_name,args,context` | cikti=`None` | yan etki=local scope gecici degisir, `function_return` gorulurse erken cikis.
+- `cmd_return_value`: girdi=`RETURN [expr]` | cikti=`None` | yan etki=`return_value` yazimi + `function_return=True`.
+- `cmd_fn`: girdi=`FN ...` | cikti=`lambda_name` | yan etki=closure uretip `self.lambdas` kaydeder.
+- `_call_lambda`: girdi=`lambda_name,args,context` | cikti=`lambda result` | yan etki=hata durumunu `PDSXCommandError`'a sarar.
+- `cmd_end_function`: girdi=`END FUNCTION` | cikti=`None` | yan etki=aktif function tanimini kapatir, context flag temizler.
+- `cmd_end_sub`: girdi=`END SUB` | cikti=`None` | yan etki=aktif sub tanimini kapatir, context flag temizler.
+- `cmd_param`: girdi=`PARAM ...` | cikti=`param_name` | yan etki=`context['current_params']` listesine ekler.
+
+### `oop_system.py` Method Sozlugu (kritik)
+- `execute_yapi`: girdi=`YAPI ...` | cikti=`None` | yan etki=`__current_yapi__` set, registry kaydi.
+- `execute_clazz`: girdi=`CLAZZ ...` | cikti=`None` | yan etki=`__current_clazz__` set, registry kaydi.
+- `execute_class`: girdi=`CLASS ...` | cikti=`None` | yan etki=`__current_class__` set, class registry kaydi.
+- `execute_inherits`: girdi=`INHERITS/EXTENDS ...` | cikti=`None` | yan etki=parent list ve MRO guncellenir.
+- `execute_field`: girdi=`FIELD ...` | cikti=`None` | yan etki=current_yapi fields mutasyonu.
+- `execute_class_field`: girdi=`<FIELD> ...` | cikti=`None` | yan etki=current_clazz class_fields mutasyonu.
+- `execute_sub`: girdi=`SUB ...` | cikti=`None` | yan etki=`__current_method__` olusturur.
+- `execute_end_sub`: girdi=`END SUB` | cikti=`None` | yan etki=current_class'a method baglar, `__current_method__` temizler.
+- `execute_function`: girdi=`FUNCTION ...` | cikti=`None` | yan etki=`execute_sub` delege + return_type set.
+- `execute_property`: girdi=`PROPERTY ...` | cikti=`None` | yan etki=`__current_property__` olusturur.
+- `execute_end_property`: girdi=`END PROPERTY` | cikti=`None` | yan etki=property class'a eklenir, context temizlenir.
+- `execute_new`: girdi=`NEW class(args)` | cikti=`PDSXInstance` | yan etki=instance registry kaydi.
+- `execute_reactive`: girdi=`REACTIVE ...` | cikti=`None` | yan etki=current_class reactive_vars mutasyonu.
+- `execute_hybrid_class`: girdi=`HYBRID CLASS ...` | cikti=`None` | yan etki=hybrid class acilisi.
+
+### `advanced_types.py` + `data_structures.py` Method Sozlugu (kritik)
+- `AdvancedTypes.execute`: girdi=`command,args,context` | cikti=`execute_* sonucu` | yan etki=komut normalize ve dispatch.
+- `execute_type`: girdi=`TYPE name` | cikti=`None` | yan etki=type_stack push.
+- `execute_end_type`: girdi=`END TYPE` | cikti=`None` | yan etki=user_types kaydi + factory.
+- `execute_struct`: girdi=`STRUCT name` | cikti=`None` | yan etki=type_stack push + `__in_type_block__/__type_block_handler__` set.
+- `execute_field_in_type`: girdi=`FIELD ...` | cikti=`None` | yan etki=aktif tip alanlarina ekleme.
+- `execute_end_struct`: girdi=`END STRUCT` | cikti=`None` | yan etki=struct kaydi/factory + type-block flag temizligi.
+- `execute_union`: girdi=`UNION name` | cikti=`None` | yan etki=type_stack push.
+- `execute_end_union`: girdi=`END UNION` | cikti=`None` | yan etki=union kaydi/factory.
+- `add_field_to_current_type`: girdi=`field_name,type/default` | cikti=`None` | yan etki=current type schema mutasyonu.
+- `_create_type_factory`: girdi=`type_name,type_def` | cikti=`factory closure` | yan etki=`interpreter.user_types` + `function_table` kaydi.
+- `DataStructures.execute_struct`: girdi=`XSTRUCTX name` | cikti=`None` | yan etki=`current_struct` + `__defining_struct__`.
+- `DataStructures.execute_end_struct`: girdi=`END XSTRUCTX` | cikti=`None` | yan etki=`context['__structs__']` kaydi, flag kapama.
+
+### Router-Context Bagimliligi
+- `FUNCTION`: class baglaminda `oop`, aksi halde `function_manager`.
+- `FIELD`: type blok baglaminda (`__in_type_block__` + `__type_block_handler__`) `advanced_types`, aksi halde `oop`.
+
+### Koddan Gelen Risk Notlari
+- `function_manager`: `FunctionParameter` nesnesi ile dict benzeri erisim kullanan cagri akisinda uyumsuzluk riski.
+- `oop_system`: BaseCommand execute imzasi ile bazi `execute_*` metot imzalari arasinda kirilganlik riski.
+- `oop_system`: bazi ileri komut metotlari `pass` durumunda (stub).
+- `advanced_types`: `TYPE/UNION` acilislarinda type-block flag yonetimi field routing icin kritik/kirilgan.

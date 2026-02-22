@@ -75,3 +75,13 @@
 
 ### Sonraki Gorevler
 - [ ] Method-level sozlugu `function_manager` + `oop_system` + `advanced_types` icin devam ettir
+
+## 2026-02-23 - Coklu Gorev Arkadaslari Durumu
+
+### Biten Gorevler
+- [bitti] `function_manager` method-level sozluk
+- [bitti] `oop_system` method-level sozluk
+- [bitti] `advanced_types` + `data_structures` method-level sozluk
+
+### Sonraki Gorevler
+- [ ] Data science ve graphics modullerinde ayni method-level sozlugu tamamla
