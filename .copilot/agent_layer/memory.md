@@ -16,3 +16,8 @@
 - `chlorellaOS` klasorunde git altyapisi baslatildi ve `agent_layer` dosyalari ilk commit ile kaydedildi.
 - Commit: `914bab5`.
 - GitHub push icin remote bilgisi henuz tanimli degil.
+
+## 2026-02-22 - GitHub Baglanti Kaydi
+- Remote `origin` su adrese ayarlandi: `https://github.com/metedinler/pdsxNew.git`.
+- Varsayilan dal `main` olarak ayarlandi.
+- Ilk push basariyla tamamlandi ve takip dali kuruldu (`origin/main`).

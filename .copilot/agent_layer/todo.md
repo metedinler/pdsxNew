@@ -10,6 +10,8 @@
 - [bitti] Agent iletisim katmani dosyalari olusturuldu (`ai_referansbelge.md`, `memory.md`, `todo.md`, `pck.md`, `notlar.md`)
 - [bitti] Onceki AI tarafindan hazirlanan temel `.copilot` belgeleri tespit edildi
 - [bitti] `agent_layer` dosyalari git commit ile kaydedildi (`914bab5`)
+- [bitti] GitHub remote `origin` baglandi (`https://github.com/metedinler/pdsxNew.git`)
+- [bitti] `main` dali ilk push ile GitHub'a gonderildi ve takip iliskisi kuruldu
 
 ## Bekleyen Kararlar
 - [ ] GitHub repo URL/organizasyon hedefi
@@ -18,3 +20,6 @@
 ## Yeni Eklenen Gorevler
 - [ ] `git remote add origin <repo-url>` ile GitHub remote baglamak
 - [ ] `git push -u origin master` ile ilk yedegi GitHub'a gondermek
+
+## Yeni Eklenen Gorevler (Guncel)
+- [ ] Her is adimi sonunda `add/commit/push` standardini uygulamak

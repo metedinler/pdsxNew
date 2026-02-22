@@ -10,3 +10,8 @@
 - Git repository baslatildi ve ilk commit alindi: `914bab5`.
 - Bu commit sadece `.copilot/agent_layer` dosyalarini icerir.
 - GitHub push denemesi yapilmadi; cunku remote URL verilmedi.
+
+## 2026-02-22 - GitHub Senkron Notu
+- Kullanici tarafindan verilen yeni repo adresi tanimlandi: `https://github.com/metedinler/pdsxNew.git`.
+- `main` dalina push basarili oldu.
+- Bundan sonra her prompt/degisiklik adiminda commit+push rutini uygulanacak.
