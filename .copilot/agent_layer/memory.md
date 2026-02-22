@@ -47,3 +47,9 @@
 - `todo.md`: yapilacaklar ve bitenler.
 - `notlar.md`: risk, engel, yarim kalan.
 - `ai_referansbelge.md`: AI calisma kurallari.
+
+## 2026-02-23 - Git Backup Adimi (Tamamlandi)
+- Root klasorde git repository baslatildi.
+- Branch: `pdsx-root-backup`.
+- Commit: `403fc4e` (`chore(agent-layer): organize pdsx communication docs without changing intent`).
+- Push: `origin/pdsx-root-backup` basariyla gonderildi.

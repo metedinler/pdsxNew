@@ -24,3 +24,8 @@
 ## 2026-02-23 - Yarim Kalanlar
 - Root klasor (`pdsx_commands`) henuz git repo degil; bu nedenle adim-bazli push rutini burada aktif degil.
 - Cozum adimi: root repo init + branch + remote + ilk push.
+
+## 2026-02-23 - Cozuldu
+- Root klasorde git aktif edildi ve branch acildi: `pdsx-root-backup`.
+- Uzak yedek basarili: `origin/pdsx-root-backup`.
+- Bundan sonraki adimlar ayni branch uzerinden atomik commit+push olarak ilerletilecek.
