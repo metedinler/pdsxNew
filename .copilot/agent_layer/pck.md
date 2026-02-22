@@ -258,6 +258,39 @@ Bu bolum PDSX kok projesi icin eklendi. Mevcut anlami degistirmez, kapsam genisl
 ### Koddan Gelen Risk Notlari
 - `function_manager`: `FunctionParameter` nesnesi ile dict benzeri erisim kullanan cagri akisinda uyumsuzluk riski.
 - `oop_system`: BaseCommand execute imzasi ile bazi `execute_*` metot imzalari arasinda kirilganlik riski.
+
+---
+
+## 2026-02-23 - Legacy Graphics Syntax Koprusu (Parser + Graphics)
+
+### Parser Genisletmesi (`pdsx_interpreter.py`)
+- Multi-word parse listesine eklendi:
+  - `CREATE IMAGE SPRITE`
+  - `CREATE ASCII SPRITE`
+  - `DRAW SPRITE`
+  - `COLLISION ON`
+  - `COLLISION OFF`
+- Etki: legacy `.pdsx` satirlari tek token komut anahtarina normalize oluyor:
+  - `CREATE_IMAGE_SPRITE`, `CREATE_ASCII_SPRITE`, `DRAW_SPRITE`, `COLLISION_ON`, `COLLISION_OFF`.
+
+### Graphics Compatibility Wrapper'lari (`graphics_system.py`)
+- Register edilen uyumluluk komutlari:
+  - `CREATE_IMAGE_SPRITE`
+  - `CREATE_ASCII_SPRITE`
+  - `DRAW_SPRITE`
+  - `COLLISION_ON`
+  - `COLLISION_OFF`
+- Wrapper davranislari:
+  - Legacy arguman formatini parse edip mevcut engine metotlarina delege eder.
+  - `COLLISION ON/OFF` komutlarini mevcut collision state toggling akisina baglar.
+  - CSV + quote iceren argumanlar icin `_split_csv_quoted` yardimcisi kullanilir.
+
+### Dogrulama Notu
+- Parse smoke test sonucu (gercek satirlarla):
+  - `CREATE IMAGE SPRITE ...` => `('CREATE_IMAGE_SPRITE', [...])`
+  - `DRAW SPRITE ...` => `('DRAW_SPRITE', [...])`
+  - `COLLISION ON` => `('COLLISION_ON', [])`
+  - `COLLISION OFF` => `('COLLISION_OFF', [])`
 - `oop_system`: bazi ileri komut metotlari `pass` durumunda (stub).
 - `advanced_types`: `TYPE/UNION` acilislarinda type-block flag yonetimi field routing icin kritik/kirilgan.
 

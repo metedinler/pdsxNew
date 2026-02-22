@@ -62,3 +62,9 @@
 - Stub komutlari cikarmak yerine yerinde calisan kod yazimi tercih edildi.
 - WAIT komutu emulasyon temelli oldugu icin donanim semantigi sinirli, ama bloklama/timeout kontrollu.
 - Klavye komutlarinda platforma gore (Windows/curses/fallback) katmanli davranis kullanildi.
+
+## 2026-02-23 - Legacy Syntax Uyumluluk Notu
+- Legacy `.pdsx` scriptlerdeki `CREATE IMAGE SPRITE`, `DRAW SPRITE`, `COLLISION ON/OFF` komutlari parser seviyesinde taninmiyordu; parser listesi genisletilerek cozuldu.
+- Graphics tarafinda compatibility wrapper eklenerek mevcut engine fonksiyonlarina kopru kuruldu.
+- Parse smoke test basarili; ancak interpreter import sirasinda ortamda eksik paket uyarilari goruldu (`pygame`, `windows-curses`) ve otomatik kurulum yolu yerel venv path hatasi verdi.
+- Bu paket uyarilari parse dogrulamasini engellemedi; runtime/GUI davranisi dogrulamasi icin ortam paketlerinin saglam kurulumu gerekir.

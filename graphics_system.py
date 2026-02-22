@@ -178,6 +178,111 @@ class GraphicsSystem(BaseCommand):
                 pass
         value = input()
         return value[0] if value else ""
+
+    def _split_csv_quoted(self, text: str) -> List[str]:
+        parts = []
+        current = []
+        in_quotes = False
+        quote_char = ''
+
+        for char in text:
+            if char in ('"', "'"):
+                if not in_quotes:
+                    in_quotes = True
+                    quote_char = char
+                elif quote_char == char:
+                    in_quotes = False
+                current.append(char)
+            elif char == ',' and not in_quotes:
+                token = ''.join(current).strip()
+                if token:
+                    parts.append(token)
+                current = []
+            else:
+                current.append(char)
+
+        tail = ''.join(current).strip()
+        if tail:
+            parts.append(tail)
+
+        return parts
+
+    def cmd_create_image_sprite_compat(self, args: List[str], context: Dict[str, Any] = None):
+        """Compatibility: CREATE IMAGE SPRITE id, "file", x, y [AS IMAGE]"""
+        if not args:
+            raise PDSXCommandError("CREATE IMAGE SPRITE: arguman gerekli")
+
+        raw = args[0].strip()
+        raw_upper = raw.upper()
+        if raw_upper.endswith(" AS IMAGE"):
+            raw = raw[:-9].strip()
+
+        parsed = self._split_csv_quoted(raw)
+        if len(parsed) < 4:
+            raise PDSXCommandError("CREATE IMAGE SPRITE: id, image, x, y gerekli")
+
+        return self.cmd_sprite_load(parsed[:6], context)
+
+    def cmd_create_ascii_sprite_compat(self, args: List[str], context: Dict[str, Any] = None):
+        """Compatibility: CREATE ASCII SPRITE id, x, y, "chars""" 
+        if not args:
+            raise PDSXCommandError("CREATE ASCII SPRITE: arguman gerekli")
+
+        parsed = self._split_csv_quoted(args[0])
+        if len(parsed) < 4:
+            raise PDSXCommandError("CREATE ASCII SPRITE: id, x, y, chars gerekli")
+
+        return self.cmd_sprite_create_ascii(parsed[:6], context)
+
+    def cmd_draw_sprite_compat(self, args: List[str], context: Dict[str, Any] = None):
+        """Compatibility: DRAW SPRITE id, "file" AT x, y"""
+        if not args:
+            raise PDSXCommandError("DRAW SPRITE: arguman gerekli")
+
+        raw = args[0].strip()
+        raw_upper = raw.upper()
+        if ' AT ' not in raw_upper:
+            raise PDSXCommandError("DRAW SPRITE: AT x, y bekleniyor")
+
+        at_idx = raw_upper.find(' AT ')
+        left = raw[:at_idx].strip()
+        right = raw[at_idx + 4:].strip()
+
+        left_parts = self._split_csv_quoted(left)
+        right_parts = self._split_csv_quoted(right)
+
+        if len(left_parts) < 1 or len(right_parts) < 2:
+            raise PDSXCommandError("DRAW SPRITE: id ve x,y gerekli")
+
+        sprite_id = int(self.evaluate_expression(left_parts[0], context))
+        x = int(self.evaluate_expression(right_parts[0], context))
+        y = int(self.evaluate_expression(right_parts[1], context))
+
+        sprite = self.sprite_manager.get_sprite(sprite_id)
+        if sprite is None:
+            if len(left_parts) >= 2:
+                image_path = str(self.evaluate_expression(left_parts[1], context)).strip('"\'')
+                self.cmd_sprite_load([str(sprite_id), f'"{image_path}"', str(x), str(y)], context)
+            else:
+                raise PDSXCommandError(f"DRAW SPRITE: sprite bulunamadi ({sprite_id})")
+        else:
+            sprite.x = x
+            sprite.y = y
+            sprite.visible = True
+
+        return sprite_id
+
+    def cmd_collision_on(self, args: List[str], context: Dict[str, Any] = None):
+        if context is None:
+            context = getattr(self.interpreter, 'context', {})
+        context['__collision_enabled__'] = True
+        return True
+
+    def cmd_collision_off(self, args: List[str], context: Dict[str, Any] = None):
+        if context is None:
+            context = getattr(self.interpreter, 'context', {})
+        context['__collision_enabled__'] = False
+        return False
     
     def _register_commands(self):
         """Grafik komutlarını kaydet"""
@@ -233,6 +338,18 @@ class GraphicsSystem(BaseCommand):
         self.register_command("MOVESPRITE", self.cmd_movesprite, "Move sprite (legacy)")
         self.register_command("SHOWSPRITE", self.cmd_showsprite, "Show sprite (legacy)")
         self.register_command("HIDESPRITE", self.cmd_hidesprite, "Hide sprite (legacy)")
+
+        # Legacy script compatibility bridge (multi-word syntax)
+        self.register_command("CREATE_IMAGE_SPRITE", self.cmd_create_image_sprite_compat,
+                    "Legacy syntax bridge", "CREATE IMAGE SPRITE id, \"file\", x, y [AS IMAGE]")
+        self.register_command("CREATE_ASCII_SPRITE", self.cmd_create_ascii_sprite_compat,
+                    "Legacy syntax bridge", "CREATE ASCII SPRITE id, x, y, \"chars\"")
+        self.register_command("DRAW_SPRITE", self.cmd_draw_sprite_compat,
+                    "Legacy syntax bridge", "DRAW SPRITE id, \"file\" AT x, y")
+        self.register_command("COLLISION_ON", self.cmd_collision_on,
+                    "Enable collision checks", "COLLISION ON")
+        self.register_command("COLLISION_OFF", self.cmd_collision_off,
+                    "Disable collision checks", "COLLISION OFF")
         
         # PHASE 1: Advanced Sprite Manager (24 Ekim 2025)
         # Note: Using single-word commands due to parser limitations

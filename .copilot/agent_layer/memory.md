@@ -93,3 +93,22 @@
 - Placeholder komutlar calisan minimum implementasyona cevrildi (`POINT/WAIT/INKEY/GETKEY/KBHIT`).
 - Pixel tamponu ve guvenli degisken erisim yardimcilari eklendi.
 - Sentaks/diagnostik kontrolu temiz gecti.
+
+## 2026-02-23 - Legacy Graphics Syntax Uyumluluk Kaydi
+- `pdsx_interpreter.py` multi-word komut listesi genisletildi:
+	- `CREATE IMAGE SPRITE`
+	- `CREATE ASCII SPRITE`
+	- `DRAW SPRITE`
+	- `COLLISION ON`
+	- `COLLISION OFF`
+- `graphics_system.py` icine compatibility komut kayitlari ve wrapper metotlar eklendi:
+	- `cmd_create_image_sprite_compat`
+	- `cmd_create_ascii_sprite_compat`
+	- `cmd_draw_sprite_compat`
+	- `cmd_collision_on`
+	- `cmd_collision_off`
+- Parse smoke test calistirildi ve legacy satirlarin parse sonucu dogrulandi:
+	- `CREATE IMAGE SPRITE ...` -> `CREATE_IMAGE_SPRITE`
+	- `DRAW SPRITE ...` -> `DRAW_SPRITE`
+	- `COLLISION ON` -> `COLLISION_ON`
+	- `COLLISION OFF` -> `COLLISION_OFF`

@@ -114,3 +114,13 @@
 
 ### Sonraki Gorevler
 - [ ] Graphics komutlarini test .pdsx dosyalariyla syntax-uyumlu sekilde dogrula (sprite/ascii/collision)
+
+## 2026-02-23 - Legacy Syntax Uyumluluk Durumu
+
+### Biten Gorevler
+- [bitti] `pdsx_interpreter.py` multi-word parser listesine legacy sprite/collision komutlari eklendi
+- [bitti] `graphics_system.py` icinde legacy komutlar icin compatibility wrapper kayitlari eklendi
+- [bitti] Parse smoke test ile `CREATE IMAGE SPRITE`, `DRAW SPRITE`, `COLLISION ON/OFF` parse ciktilari dogrulandi
+
+### Sonraki Gorevler
+- [ ] Legacy komutlarin `execute_line` seviyesinde mini runtime akisini dogrula (ortam bagimli)
