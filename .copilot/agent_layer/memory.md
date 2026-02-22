@@ -53,3 +53,9 @@
 - Branch: `pdsx-root-backup`.
 - Commit: `403fc4e` (`chore(agent-layer): organize pdsx communication docs without changing intent`).
 - Push: `origin/pdsx-root-backup` basariyla gonderildi.
+
+## 2026-02-23 - Interpreter Genel Inceleme Kaydi
+- `pdsx_interpreter.py` icinde init, parse, router, execute ve run akislari adim adim cozuldu.
+- `_route_command` icindeki cakisma cozumleri ve context-duyarli routing kurallari netlestirildi.
+- Modul bazli komut kayit yogunlugu (register_command sayimlari) cikarildi.
+- Bulgular `pck.md` icine teknik harita olarak append edildi.

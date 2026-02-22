@@ -29,3 +29,8 @@
 - Root klasorde git aktif edildi ve branch acildi: `pdsx-root-backup`.
 - Uzak yedek basarili: `origin/pdsx-root-backup`.
 - Bundan sonraki adimlar ayni branch uzerinden atomik commit+push olarak ilerletilecek.
+
+## 2026-02-23 - Interpreter Inceleme Notlari
+- Router logic kritik: `FUNCTION` ve `FIELD` komutlari context'e gore farkli modullere yonleniyor.
+- Cakisan komut override kurali var (`CLS`, `SLEEP`, `INPUT`, `GETKEY` -> core).
+- Alias/space-version kayitlari sebebiyle komut adedi ve register sayisi birebir ayni olmayabilir.

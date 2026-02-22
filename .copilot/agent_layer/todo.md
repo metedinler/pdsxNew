@@ -49,3 +49,12 @@
 ### Sonraki Gorevler
 - [ ] PDSX tum modullerinin sinif ve temel metotlarini parca parca `pck.md` icine derinlestir
 - [ ] Her yeni degisiklik adiminda commit + push rutini surdur
+
+## 2026-02-23 - Interpreter Inceleme Durumu
+
+### Biten Gorevler
+- [bitti] Interpreter yapisi (init/parse/router/execute/run) cozuldu
+- [bitti] Komut/module haritasi cikarildi ve `pck.md` kaydi yapildi
+
+### Sonraki Gorevler
+- [ ] Modul bazli sinif-metot seviyesinde detaylandirma (ilk hedef: `core_commands`, `variable_manager`, `flow_control`, `loop_control`)

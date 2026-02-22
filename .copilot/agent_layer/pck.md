@@ -3,55 +3,10 @@
 ## Modul Ozeti (Baslangic)
 
 ### 1) `src/main.jsx`
-- Amac: React giris noktasi, `App` render, `ErrorBoundary` sarmalama, `RecommendationEngine` global init.
-- Onem: Uygulamanin acilis davranisini belirler.
+- Amac: 
+- Onem: 
 
-### 2) `src/App.jsx`
-- Amac: Ana UI orkestrasyonu (tab secimi, provider katmanlari, component rotasi).
-- Ana Yapilar:
-  - `EnforcedChlorellaSystemProvider`
-  - `MaterialsProvider`
-  - `SimulationWorker` start/stop
-- Onem: Tum islevlerin kullaniciya acildigi merkez.
 
-### 3) `src/contexts/EnforcedChlorellaSystemContext.jsx`
-- Amac: Dijital ikiz kurallariyla merkezi state yonetimi.
-- Temel Kavramlar:
-  - ACTION tabanli reducer
-  - Tank bazli state
-  - Model-state senkronizasyonu
-- Onem: Single source of truth.
-
-### 4) `src/workers/SimulationWorker.js`
-- Amac: Arka planda periodik simülasyon ve risk kontrolu.
-- Islevler:
-  - start/stop
-  - runHourlySimulation
-  - evaluateRisks
-  - forecast24Hours
-- Onem: Operasyonel tahmin/risk katmani.
-
-### 5) `src/utils/stateSynchronizer.js`
-- Amac: Context <-> Model iki yonlu senkronizasyon.
-- Islevler:
-  - syncContextToModel
-  - syncModelToContext
-  - bidirectionalSync
-- Onem: Veri tutarliligi ve izlenebilirlik.
-
-### 6) `src/utils/databaseManager.js`
-- Amac: Export/import ve backup odakli veri operasyonlari.
-- Islevler:
-  - exportChemicalDatabase
-  - exportTankData
-  - exportAllSystemData
-  - importTankData
-  - importFullSystemData
-- Onem: Tasima, geri donus ve yedekleme.
-
-### 7) `src/utils/userManager.js`
-- Amac: Profil/tercih/favori/ozel tarif/gecmis yonetimi (localStorage).
-- Onem: Kullanici deneyimi ve kalicilik.
 
 ## Not
 - Derin sinif/metot detaylari her degisiklikte buraya EKLENIR (silinmez).
@@ -109,3 +64,41 @@ Bu bolum PDSX kok projesi icin eklendi. Mevcut anlami degistirmez, kapsam genisl
 ### Duzeltme Notu (2026-02-23)
 - `oop_system.py` icindeki komut sinifi adi `OOPSystem` degil `OOPCommands` olarak gecmektedir.
 - `rest_api_system.py` sinifi `RESTAPISystem` degil `RestAPISystem` olarak gecmektedir.
+
+---
+
+## 2026-02-23 - Interpreter Cozumleme Notlari
+
+### Calisma Akisi
+1. Giris: `pdsx_launcher.py` venv kontrolu yapar ve interpreter main cagrisina gecer.
+2. Cekirdek: `PDSXInterpreter.__init__` context/registry kurar, sonra `_init_modules` ile tum modulleri yukler.
+3. Kayit: Her modul `BaseCommand.register_command` ile komutlarini `interpreter.commands` uzerine kaydeder.
+4. Parse: `parse_line` satiri komut + arguman formatina cevirir; multi-word komutlari normalize eder.
+5. Calistirma: `execute_line` ve `execute_statement`, `_route_command` ile dogru module yonlendirip `handler.execute(...)` cagirir.
+6. Program dongusu: `run` satir satir ilerler, skip-mode ile IF/ELSE/LOOP gibi blok kontrolunu yonetir.
+
+### Router Davranisi (Kritik)
+- `FUNCTION`: CLASS baglamindaysa `oop`, degilse `functions`.
+- `FIELD`: TYPE/STRUCT baglamindaysa `advanced_types` handler, degilse `oop`.
+- Cakisan komutlar (`CLS`, `SLEEP`, `INPUT`, `GETKEY`) her zaman `core` module override edilir.
+
+### Cekirdek Modul Gruplari
+- Temel: `CoreCommands`, `VariableManager`, `FlowControl`, `LoopControl`, `FunctionManager`, `OOPCommands`, `DataStructures`, `StringOperations`, `MathOperations`.
+- Sistem/IO: `FileOperations`, `EventSystem`, `DatabaseOperations`, `NetworkOperations`, `DLLSystem`.
+- Gelismis: `ExceptionHandling`, `NamespaceSystem`, `AdvancedTypes`, `ThreadingSystem`, `DebugSystem`, `MemorySystem`, `AdvancedOperators`, `RegexOperations`, `CastSystem`, `TypeFunctions`, `NestingValidator`.
+- AI/API: `PrologSystem`, `NLPSystem`, `GitHubOperations`, `RestAPISystem`.
+- Veri bilimi/grafik: `StatisticalTests`, `NumpyOperations`, `PandasOperations`, `LinqOperations`, `GraphicsSystem`.
+
+### Komut Yuzeyi (register_command sayisi, ust moduller)
+- `graphics_system.py`: 134
+- `statistical_tests.py`: 133
+- `pandas_operations.py`: 67
+- `string_operations.py`: 56
+- `numpy_operations.py`: 50
+- `oop_system.py`: 50
+- `math_operations.py`: 40
+- `linq_operations.py`: 31
+
+### Notlar
+- Komut sayisi `register_command` cagri adedidir; alias/space-version nedeniyle efektif komut adedi daha farkli olabilir.
+- `BaseCommand` underscore iceren komutlarin bosluklu aliaslarini da kaydeder.
