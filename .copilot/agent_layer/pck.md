@@ -260,3 +260,46 @@ Bu bolum PDSX kok projesi icin eklendi. Mevcut anlami degistirmez, kapsam genisl
 - `oop_system`: BaseCommand execute imzasi ile bazi `execute_*` metot imzalari arasinda kirilganlik riski.
 - `oop_system`: bazi ileri komut metotlari `pass` durumunda (stub).
 - `advanced_types`: `TYPE/UNION` acilislarinda type-block flag yonetimi field routing icin kritik/kirilgan.
+
+---
+
+## 2026-02-23 - Derin Inceleme (Data-Science + Graphics + Sistem)
+
+### Data-Science Katmani
+- `statistical_tests.py` / `StatisticalTests`
+  - Kritik metotlar: `cmd_mean`, `cmd_shapiro`, `cmd_ttest`, `cmd_anova`, `cmd_bonferroni`, `cmd_permtest`, `cmd_ols`, `cmd_arima`.
+  - Yan etki paterni: test/model sonucu context degiskenlerine yazim + stdout raporlama.
+- `numpy_operations.py` / `NumpyOperations`
+  - Kritik metotlar: `cmd_arange`, `cmd_meshgrid`, `cmd_reshape`, `cmd_dot`, `cmd_histogram`, `cmd_concatenate`, `cmd_interp`, `cmd_gradient`.
+  - Yan etki paterni: hesap sonucu context'e yazim, cogu komutta print ciktisi.
+- `pandas_operations.py` / `PandasOperations`
+  - Kritik metotlar: `cmd_dataframe`, `cmd_read_csv`, `cmd_to_csv`, `cmd_groupby`, `cmd_merge`, `cmd_fillna`, `cmd_rolling`, `cmd_resample`, `cmd_query`, `cmd_loc`.
+  - Yan etki paterni: DataFrame donusleri + dosya I/O (`read_csv/to_csv`).
+
+### Graphics Katmani
+- `graphics_system.py` / `GraphicsSystem` (monolitik ana sinif)
+  - Alt sistemler: sprite, font/text, collision/z-order, animation/tween/timeline, camera/viewport/layer/postprocess, lighting/particle/audio/physics.
+  - Kritik metotlar: `cmd_screen`, `cmd_get_image`, `cmd_input`, `cmd_sprite_create_ascii`, `cmd_sprite_load`, `cmd_sprite_move`, `cmd_sprite_info`, `cmd_font_load`, `cmd_text_draw`, `cmd_collision_list`, `cmd_sprite_sort`, `cmd_animation_create`, `cmd_tween_create`, `cmd_tween_update`, `cmd_timeline_create`, `cmd_timeline_update`, `cmd_camera_follow`, `cmd_effect_add`, `cmd_sound_play_3d`, `cmd_body_create`.
+
+### Sistem Katmani (I/O ve Altyapi)
+- `file_operations.py` / `FileOperations`
+  - Kritik metotlar: `cmd_open`, `cmd_close`, `cmd_write`, `cmd_read`, `cmd_line_input`, `cmd_seek`, `execute_tell`, `cmd_delete`, `cmd_rename`, `cmd_copy`, `cmd_mkdir`, `cmd_rmdir`, `cmd_chdir`.
+- `network_operations.py` / `NetworkOperations`
+  - Kritik metotlar: `cmd_http_get/post/put/delete`, `cmd_http_header`, `cmd_socket_open/connect/send/receive/listen/accept`, `execute_url_encode/decode`, `execute_json_encode/decode`.
+- `database_operations.py` / `DatabaseOperations`
+  - Kritik metotlar: `cmd_db_connect`, `cmd_db_use`, `cmd_db_query`, `cmd_db_execute`, `cmd_db_fetch`, `execute_db_fetchall`, `cmd_db_commit`, `cmd_db_rollback`, `execute_db_rowcount`, `execute_db_lastid`.
+- `event_system.py` / `EventSystem`
+  - Kritik metotlar: `cmd_on_event`, `cmd_subscribe`, `cmd_trigger`, `cmd_emit`, `cmd_unsubscribe`, `cmd_queue_event`, `cmd_process_events`, `execute_event_count`, `cmd_clear_event`, `cmd_clear_all_events`.
+- `linq_operations.py` / `LinqOperations`
+  - Kritik metotlar: `cmd_map`, `cmd_filter`, `cmd_reduce`, `cmd_orderby`, `cmd_orderbydesc`, `cmd_groupby`, `cmd_join`, `cmd_union`, `cmd_intersect`, `cmd_except`, `cmd_chunk`, `cmd_partition`.
+- `string_operations.py` / `StringOperations`
+  - Kritik metotlar: `execute_mid`, `execute_instr`, `execute_replace`, `execute_format`, `execute_val`, `execute_strarray`, `execute_strget`, `execute_strset`, `execute_strmatch`, `execute_strswap`.
+- `math_operations.py` / `MathOperations`
+  - Kritik metotlar: `execute_sqr`, `execute_rnd`, `execute_log`, `execute_log10`, `execute_pow`, `execute_mod`, `execute_factorial`, `execute_gcd`, `execute_lcm`.
+
+### Derin Risk Ozeti (kod kanitli)
+- `graphics_system.py`: cift `super().__init__` cagrisi + cok buyuk tek sinif + bazi stub komutlar.
+- Data-science modullerinde handler imza/yardimci metod sozlesmesi kirilganligi riski (BaseCommand execute sozlesmesi ile uyum hassas).
+- `network_operations.py`: timeout/retry politikasi zayifsa bloklama riski.
+- `database_operations.py`: `DB.QUERY` dogrudan SQL birlestirmede enjeksiyon riski; `DB.EXECUTE` daha guvenli yol.
+- `event_system.py`: kuyruk isleme ve hata yutma modeli uzun kuyruk/hata gozlenebilirligini etkileyebilir.

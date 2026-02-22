@@ -48,3 +48,8 @@
 - OOP/function/type katmani method-level olarak haritalandi.
 - Router bagimli akislarda (`FUNCTION`/`FIELD`) context flag tutarliligi kritik olarak not edildi.
 - Stub metotlar ve imza kirilganligi sonraki teknik borc listesine alinmali.
+
+## 2026-02-23 - Derin Inceleme Faz 2 Notu
+- Graphics katmani tek dosyada asiri buyuk ve bakim maliyeti yuksek.
+- Data-science modullerinde method imza/yardimci API uyumunun dikkatle dogrulanmasi gerekiyor.
+- DB ve network tarafinda guvenlik/dayaniklilik (query kullanimi, timeout/retry) iyilestirme adayi.
