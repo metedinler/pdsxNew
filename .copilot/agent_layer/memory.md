@@ -67,3 +67,8 @@
 	3) sistem + veri bilimi modulleri.
 - Cikti birlestirilerek `pck.md` icine derin envanter append edildi.
 - Hedef: sinif/metot/modul seviyesinde devralinabilir teknik hafiza olusturmak.
+
+## 2026-02-23 - Devam Adimi (Metod Davranis Sozlugu)
+- Paralel alt ajanlarla kritik metotlar icin girdi/cikti/yan etki analizi cikarildi.
+- Sonuclar `pck.md` icine method-level sozluk olarak append edildi.
+- Odak moduller: `core_commands`, `variable_manager`, `flow_control`, `loop_control`.

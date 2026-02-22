@@ -67,3 +67,11 @@
 
 ### Sonraki Gorevler
 - [ ] Kritik modullerde metod seviyesinde davranis ozetini (girdi/cikti/yan etki) eklemeye basla
+
+## 2026-02-23 - Devam Durumu
+
+### Biten Gorevler
+- [bitti] Kritik moduller icin metod davranis sozlugu eklendi (`core/variable/flow/loop`)
+
+### Sonraki Gorevler
+- [ ] Method-level sozlugu `function_manager` + `oop_system` + `advanced_types` icin devam ettir

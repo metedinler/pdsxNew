@@ -149,3 +149,57 @@ Bu bolum PDSX kok projesi icin eklendi. Mevcut anlami degistirmez, kapsam genisl
 - `graphics_system.py`: tek sinifta cok genis alan (3271+ satir, 150+ method).
 - `statistical_tests.py`: cok yuksek komut yuku (2000+ satir, 140+ method), tekrar eden `MOOD` kaydi notu.
 - `pandas_operations.py` / `numpy_operations.py`: tek dosya genis API yuzeyi.
+
+---
+
+## 2026-02-23 - Metod Davranis Sozlugu (Kritik Moduller)
+
+### `core_commands.py` (`CoreCommands`)
+- `cmd_print`: girdi=`args, context` | cikti=`None` | yan etki=konsola yazdirir, expression cozer, Windows UTF-8 codepage ayarlamayi dener.
+- `cmd_input`: girdi=`args, context` | cikti=`None` | yan etki=kullanicidan input alip degiskenlere yazar (`set_variable`).
+- `cmd_cls`: girdi=`args` | cikti=`None` | yan etki=terminal temizler (`cls/clear`).
+- `cmd_end`: girdi=`args` | cikti=sureci sonlandirir | yan etki=`interpreter.running=False`, `sys.exit(0)`.
+- `cmd_load`: girdi=`filename` | cikti=`None` | yan etki=dosya okur, interpreter program alanina yukler.
+- `cmd_save`: girdi=`filename` | cikti=`None` | yan etki=interpreter programini dosyaya yazar.
+- `cmd_run`: girdi=`opsiyonel filename` | cikti=`None` | yan etki=load+execute tetikler (`execute_program`/`run`).
+- `cmd_sleep`: girdi=`ms` | cikti=`None` | yan etki=calismayi bekletir (`time.sleep`).
+- `cmd_debug`: girdi=`ON/OFF` | cikti=`None` | yan etki=`interpreter.debug_mode` degistirir.
+- `cmd_trace`: girdi=`ON/OFF` | cikti=`None` | yan etki=`interpreter.trace_mode` degistirir.
+- `cmd_getkey`: girdi=`opsiyonel hedef tuslar` | cikti=`str` | yan etki=bloklayici tus bekleme.
+- `cmd_alias`: girdi=`new_name, existing_command` | cikti=`None` | yan etki=`interpreter.command_aliases` uzerine alias yazar.
+
+### `variable_manager.py` (`VariableManager`)
+- `cmd_dim`: girdi=`DIM ...` | cikti=`None` | yan etki=degisken/dizi olusturur, `var_types` kaydi acilir.
+- `cmd_let`: girdi=`var = expr` | cikti=`None` | yan etki=ifadeyi cozer ve degiskene yazar.
+- `cmd_const`: girdi=`CONST ... = ...` | cikti=`None` | yan etki=`constants` ve `global_vars` guncellenir.
+- `cmd_global`: girdi=`GLOBAL var [=expr]` | cikti=`None` | yan etki=global scope yazimi.
+- `cmd_local`: girdi=`LOCAL var [=expr]` | cikti=`None` | yan etki=local scope yazimi.
+- `cmd_redim`: girdi=`REDIM [PRESERVE] arr(size)` | cikti=`None` | yan etki=dizi yeniden boyutlanir.
+- `cmd_erase`: girdi=`var/array` | cikti=`None` | yan etki=local/global'dan silme.
+- `cmd_swap`: girdi=`var1,var2` | cikti=`None` | yan etki=iki degisken degerini degistirir.
+- `cmd_unset`: girdi=`var` | cikti=`None` | yan etki=`cmd_erase` delege edilir.
+
+### `flow_control.py` (`FlowControl`)
+- `cmd_if`: girdi=`condition THEN ...` | cikti=`bool/None/statement result` | yan etki=`if_stack` ve `__skip_*` bayraklarini yonetir.
+- `cmd_else`: girdi=`ELSE` | cikti=`True/False` | yan etki=aktif IF state'i ve skip hedefleri guncellenir.
+- `cmd_elseif`: girdi=`condition THEN` | cikti=`True/False` | yan etki=if state (`executed/condition`) ve skip alanlari guncellenir.
+- `cmd_endif`: girdi=`ENDIF` | cikti=`None` | yan etki=`if_stack.pop()`, skip reset.
+- `cmd_select`: girdi=`SELECT CASE expr` | cikti=`value` | yan etki=`select_stack` push.
+- `cmd_case`: girdi=`CASE ...` | cikti=`True/False` | yan etki=son select state `matched/in_case` gunceller.
+- `cmd_end_select`: girdi=`END SELECT` | cikti=`None` | yan etki=`select_stack.pop()`.
+- `cmd_goto`: girdi=`label` | cikti=`label` | yan etki=`context['goto_label']` set.
+- `cmd_gosub`: girdi=`label` | cikti=`label` | yan etki=donus adresini stack'e yazar, `goto_label` set.
+- `cmd_return`: girdi=`opsiyonel expr` | cikti=`None/expr` | yan etki=GOSUB donusu veya `function_return` bayragi.
+
+### `loop_control.py` (`LoopControl`)
+- `cmd_for`: girdi=`FOR var=start TO end [STEP inc]` | cikti=`start_value` | yan etki=loop state push, gerekirse `skip_to_next`.
+- `cmd_next`: girdi=`NEXT [var]` | cikti=`next value/None` | yan etki=iterasyonu ilerletir, gerekiyorsa `program_counter/current_line` geri sarar.
+- `cmd_while`: girdi=`condition` | cikti=`bool` | yan etki=`WHILE` state push, false ise `skip_to_wend`.
+- `cmd_wend`: girdi=`WEND` | cikti=`True/False` | yan etki=kosula gore donguye geri doner veya pop eder.
+- `cmd_do`: girdi=`DO [WHILE/UNTIL cond]` | cikti=`bool` | yan etki=`DO` state push, on-test fail ise `skip_to_loop`.
+- `cmd_loop`: girdi=`LOOP [WHILE/UNTIL cond]` | cikti=`True/False/next item` | yan etki=DO/DO_EACH akisini ilerletir veya geri sarar.
+- `cmd_exit_for`: girdi=`EXIT FOR` | cikti=`None` | yan etki=en yakin FOR state'i silinir, `exit_loop_type` set.
+- `cmd_continue_for`: girdi=`CONTINUE FOR` | cikti=`None` | yan etki=`continue_loop_type`/`continue_to_pc` set.
+
+### Not
+- Bu sozluk kod davranisina dayali cikartilmistir; metot imzalari ve yan etkiler interpreter context alanlariyla birlikte okunmalidir.

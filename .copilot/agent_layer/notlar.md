@@ -39,3 +39,7 @@
 - `graphics_system.py` ve `statistical_tests.py` bakim maliyeti yuksek gorunuyor (tek dosyada cok genis komut yuzeyi).
 - Router bagimli komutlar (`FUNCTION`, `FIELD`) context flag'lerine hassas; yanlis flag akisi davranis farki uretebilir.
 - register sayisi ile gercek efektif komut adedi birebir ayni degil (alias/space kayitlari).
+
+## 2026-02-23 - Devam Notu
+- Method-level sozlukte context yan etkileri acik yazildi; debugger ve router ariza analizinde dogrudan kullanilabilir.
+- Sonraki derinlestirme hedefi OOP/function/type katmani.
