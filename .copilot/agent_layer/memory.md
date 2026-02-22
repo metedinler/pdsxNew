@@ -87,3 +87,9 @@
 - Dosya-bazli teknik borc maddeleri P0/P1/P2 onceligiyle cikarildi.
 - Yeni dosya olusturuldu: `TECH_DEBT_BACKLOG.md`.
 - `pck.md` icine backlog ozeti append edildi.
+
+## 2026-02-23 - P0 Uygulama Kaydi (Graphics Baslangic)
+- `graphics_system.py` icinde cift init cagrisi temizlendi.
+- Placeholder komutlar calisan minimum implementasyona cevrildi (`POINT/WAIT/INKEY/GETKEY/KBHIT`).
+- Pixel tamponu ve guvenli degisken erisim yardimcilari eklendi.
+- Sentaks/diagnostik kontrolu temiz gecti.

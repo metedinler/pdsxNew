@@ -104,3 +104,13 @@
 
 ### Sonraki Gorevler
 - [ ] P0 maddelerini tek tek uygulama adimina cevir (ilk hedef: `graphics_system.py` init/stub temizligi)
+
+## 2026-02-23 - P0 Icra Durumu (Graphics)
+
+### Biten Gorevler
+- [bitti] `graphics_system.py` cift init temizligi
+- [bitti] Stub/placeholder komutlarin calisan minimum implementasyonu
+- [bitti] Dosya sentaks dogrulamasi
+
+### Sonraki Gorevler
+- [ ] Graphics komutlarini test .pdsx dosyalariyla syntax-uyumlu sekilde dogrula (sprite/ascii/collision)

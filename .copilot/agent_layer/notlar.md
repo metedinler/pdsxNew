@@ -57,3 +57,8 @@
 ## 2026-02-23 - Teknik Borc Plan Notu
 - Backlog dosyasi acildi ve oncelikler sabitlendi (P0/P1/P2).
 - Uygulama sirasinda once P0 maddeleri, sonra P1/P2 alinacak.
+
+## 2026-02-23 - Graphics Uygulama Notu
+- Stub komutlari cikarmak yerine yerinde calisan kod yazimi tercih edildi.
+- WAIT komutu emulasyon temelli oldugu icin donanim semantigi sinirli, ama bloklama/timeout kontrollu.
+- Klavye komutlarinda platforma gore (Windows/curses/fallback) katmanli davranis kullanildi.

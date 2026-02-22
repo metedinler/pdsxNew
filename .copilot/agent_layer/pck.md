@@ -334,3 +334,22 @@ Bu bolum PDSX kok projesi icin eklendi. Mevcut anlami degistirmez, kapsam genisl
 - `string_operations.py`
   - Sorun: cok genis API yuzeyi ve davranis tutarsizlik riski.
   - Ilk adim: komut sozlesme tablosu (girdi/cikti/hata) ve test matrisi.
+
+---
+
+## 2026-02-23 - P0 Icra Baslangici (`graphics_system.py`)
+
+### Yapilanlar
+- Cift `super().__init__(interpreter)` cagrisi tekilleştirildi.
+- Placeholder komutlar calisan minimum davranisa cevrildi:
+  - `cmd_point`: bellek tabanli piksel tamponundan deger dondurur.
+  - `cmd_wait`: emule port kosulu icin timeout'lu bekleme uygular.
+  - `cmd_inkey`: non-blocking tus okuma (platforma gore).
+  - `cmd_getkey`: blocking tus okuma (platforma gore).
+  - `cmd_kbhit`: klavye durumunu 0/1 dondurur.
+- Grafik verisi icin `_pixel_buffer` eklendi; `cmd_pset/cmd_preset/cmd_get_image/cmd_put_image` bu tamponla calisacak sekilde guncellendi.
+- Interpreter degisken erisim kirilganligini azaltmak icin `_set_variable` ve `_get_variable` yardimcilari eklendi.
+
+### Davranis Notu
+- Stub komutlar disari alinmadi; yerinde calisan kod tercih edildi.
+- Donanim-port WAIT gercek donanim yerine `context['__ports__']` uzerinden emule edildi (timeout korumali).
