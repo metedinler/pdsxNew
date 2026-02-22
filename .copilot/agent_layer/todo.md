@@ -58,3 +58,12 @@
 
 ### Sonraki Gorevler
 - [ ] Modul bazli sinif-metot seviyesinde detaylandirma (ilk hedef: `core_commands`, `variable_manager`, `flow_control`, `loop_control`)
+
+## 2026-02-23 - Paralel Alt Ajan Durumu
+
+### Biten Gorevler
+- [bitti] Uc alt ajan ile moduller paralel cozuldu (cekirdek, oop/function/type, sistem+veri bilimi)
+- [bitti] `pck.md` icine sinif/metot/modul derin envanteri append edildi
+
+### Sonraki Gorevler
+- [ ] Kritik modullerde metod seviyesinde davranis ozetini (girdi/cikti/yan etki) eklemeye basla

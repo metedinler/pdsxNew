@@ -34,3 +34,8 @@
 - Router logic kritik: `FUNCTION` ve `FIELD` komutlari context'e gore farkli modullere yonleniyor.
 - Cakisan komut override kurali var (`CLS`, `SLEEP`, `INPUT`, `GETKEY` -> core).
 - Alias/space-version kayitlari sebebiyle komut adedi ve register sayisi birebir ayni olmayabilir.
+
+## 2026-02-23 - Paralel Alt Ajan Risk Notlari
+- `graphics_system.py` ve `statistical_tests.py` bakim maliyeti yuksek gorunuyor (tek dosyada cok genis komut yuzeyi).
+- Router bagimli komutlar (`FUNCTION`, `FIELD`) context flag'lerine hassas; yanlis flag akisi davranis farki uretebilir.
+- register sayisi ile gercek efektif komut adedi birebir ayni degil (alias/space kayitlari).
