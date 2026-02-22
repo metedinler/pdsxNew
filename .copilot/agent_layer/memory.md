@@ -10,3 +10,9 @@
 ## Uzun Vadeli Hedef
 - pdsX baglamindan kopmadan ChlorellaOS gelistirme adimlarini izlenebilir tutmak.
 - Her degisiklikte moduler aciklama + gorev + hafiza kaydi bir arada ilerletmek.
+
+## 2026-02-22 - Ek Kayit
+- `agent_layer` icinde 6 temel dosya olusturuldu: `ai_referansbelge.md`, `memory.md`, `todo.md`, `notlar.md`, `pck.md`, `found_previous_agent_assets.md`.
+- `chlorellaOS` klasorunde git altyapisi baslatildi ve `agent_layer` dosyalari ilk commit ile kaydedildi.
+- Commit: `914bab5`.
+- GitHub push icin remote bilgisi henuz tanimli degil.
