@@ -53,3 +53,7 @@
 - Graphics katmani tek dosyada asiri buyuk ve bakim maliyeti yuksek.
 - Data-science modullerinde method imza/yardimci API uyumunun dikkatle dogrulanmasi gerekiyor.
 - DB ve network tarafinda guvenlik/dayaniklilik (query kullanimi, timeout/retry) iyilestirme adayi.
+
+## 2026-02-23 - Teknik Borc Plan Notu
+- Backlog dosyasi acildi ve oncelikler sabitlendi (P0/P1/P2).
+- Uygulama sirasinda once P0 maddeleri, sonra P1/P2 alinacak.

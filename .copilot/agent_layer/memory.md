@@ -82,3 +82,8 @@
 - Paralel alt ajanlarla data-science, graphics ve sistem modulleri method-level cozuldu.
 - En genis risk alani olarak `graphics_system.py` ve istatistik/veri isleme modulleri isaretlendi.
 - Sonuclar `pck.md` icine yeni derin envanter bolumu olarak append edildi.
+
+## 2026-02-23 - Teknik Borc Backlog Fazı
+- Dosya-bazli teknik borc maddeleri P0/P1/P2 onceligiyle cikarildi.
+- Yeni dosya olusturuldu: `TECH_DEBT_BACKLOG.md`.
+- `pck.md` icine backlog ozeti append edildi.

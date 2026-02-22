@@ -95,3 +95,12 @@
 
 ### Sonraki Gorevler
 - [ ] Kritik riskler icin teknik borc/backlog maddelerini dosya-bazli ac (oncelik: graphics, statistical, pandas/numpy)
+
+## 2026-02-23 - Teknik Borc Durumu
+
+### Biten Gorevler
+- [bitti] Dosya-bazli teknik borc maddeleri acildi (P0/P1/P2)
+- [bitti] `TECH_DEBT_BACKLOG.md` olusturuldu
+
+### Sonraki Gorevler
+- [ ] P0 maddelerini tek tek uygulama adimina cevir (ilk hedef: `graphics_system.py` init/stub temizligi)

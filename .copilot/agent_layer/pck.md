@@ -303,3 +303,34 @@ Bu bolum PDSX kok projesi icin eklendi. Mevcut anlami degistirmez, kapsam genisl
 - `network_operations.py`: timeout/retry politikasi zayifsa bloklama riski.
 - `database_operations.py`: `DB.QUERY` dogrudan SQL birlestirmede enjeksiyon riski; `DB.EXECUTE` daha guvenli yol.
 - `event_system.py`: kuyruk isleme ve hata yutma modeli uzun kuyruk/hata gozlenebilirligini etkileyebilir.
+
+---
+
+## 2026-02-23 - Dosya Bazli Teknik Borc Backlog (Oncelikli)
+
+### P0 (hemen ele alinacak)
+- `graphics_system.py`
+  - Sorun: cift init cagrisi, monolitik boyut, stub komutlar.
+  - Ilk adim: cift `super().__init__` temizligi + stub komutlari `NotImplementedError` veya net fallback ile standartlastirma.
+- `statistical_tests.py`, `numpy_operations.py`, `pandas_operations.py`
+  - Sorun: BaseCommand handler sozlesmesiyle imza/yardimci API kirilganligi riski.
+  - Ilk adim: command handler imzalarini `handler(args, context)` uyumunda dogrulama ve duzeltme listesi.
+
+### P1 (kisa vadeli)
+- `database_operations.py`
+  - Sorun: `DB.QUERY` tarafinda SQL birlestirme kaynakli guvenlik riski.
+  - Ilk adim: parametreli sorgu yolunu varsayilan hale getirme, `DB.QUERY` icin uyarili/guvenli mod.
+- `network_operations.py`
+  - Sorun: timeout/retry eksikligi nedeniyle bloklama ve dayaniklilik riski.
+  - Ilk adim: varsayilan timeout + sinirli retry politikasi.
+- `event_system.py`
+  - Sorun: kuyruk performansi ve hata gozlenebilirligi.
+  - Ilk adim: FIFO veri yapisi iyilestirme ve structured error kaydi.
+
+### P2 (orta vadeli)
+- `linq_operations.py`
+  - Sorun: eval tabanli ifade calistirma ve O(n*m) join maliyeti.
+  - Ilk adim: guvenli expression subset + buyuk koleksiyonlarda guard/limit.
+- `string_operations.py`
+  - Sorun: cok genis API yuzeyi ve davranis tutarsizlik riski.
+  - Ilk adim: komut sozlesme tablosu (girdi/cikti/hata) ve test matrisi.
