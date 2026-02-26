@@ -232,7 +232,22 @@ class GraphicsSystem(BaseCommand):
         if len(parsed) < 4:
             raise PDSXCommandError("CREATE ASCII SPRITE: id, x, y, chars gerekli")
 
-        return self.cmd_sprite_create_ascii(parsed[:6], context)
+        sprite_id = parsed[0]
+        second = parsed[1].strip()
+        third = parsed[2].strip()
+        fourth = parsed[3].strip()
+
+        second_is_chars = (
+            (len(second) >= 2 and second[0] == second[-1] and second[0] in ('"', "'"))
+            or (not second.replace('.', '', 1).lstrip('-').isdigit())
+        )
+
+        if second_is_chars:
+            normalized = [sprite_id, third, fourth, second]
+        else:
+            normalized = [sprite_id, second, third, fourth]
+
+        return self.cmd_sprite_create_ascii(normalized[:6], context)
 
     def cmd_draw_sprite_compat(self, args: List[str], context: Dict[str, Any] = None):
         """Compatibility: DRAW SPRITE id, "file" AT x, y"""

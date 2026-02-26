@@ -291,6 +291,21 @@ Bu bolum PDSX kok projesi icin eklendi. Mevcut anlami degistirmez, kapsam genisl
   - `DRAW SPRITE ...` => `('DRAW_SPRITE', [...])`
   - `COLLISION ON` => `('COLLISION_ON', [])`
   - `COLLISION OFF` => `('COLLISION_OFF', [])`
+
+### Execute-Line Runtime Dogrulama (2026-02-23)
+- `COLLISION ON/OFF` komutlari execute seviyesinde dogrulandi:
+  - `COLLISION ON` => `True`
+  - `COLLISION OFF` => `False`
+  - context bayragi: `__collision_enabled__` beklendigi gibi guncelleniyor.
+- `CREATE ASCII SPRITE` + `DRAW SPRITE` komutlari execute seviyesinde dogrulandi:
+  - sprite olusumu ve `DRAW` sonrasi koordinat guncellemesi dogrulandi (`x,y`).
+- `CREATE ASCII SPRITE` wrapper davranisi genisletildi:
+  - normalize edilen iki format: `id, "chars", x, y` ve `id, x, y, "chars"`.
+
+### Runtime Ortam Koruma Notu
+- `PDSXInterpreter._setup_virtual_environment` artik `pdsxu_venv` yoksa auto paket kontrolunu atliyor.
+- Opsiyonel bypass: `PDSX_DISABLE_AUTO_DEP_INSTALL=1`.
+- Etki: yanlis/olmayan legacy venv path'e otomatik pip denemesi ve gürültulu cikti engellenir.
 - `oop_system`: bazi ileri komut metotlari `pass` durumunda (stub).
 - `advanced_types`: `TYPE/UNION` acilislarinda type-block flag yonetimi field routing icin kritik/kirilgan.
 

@@ -124,3 +124,14 @@
 
 ### Sonraki Gorevler
 - [ ] Legacy komutlarin `execute_line` seviyesinde mini runtime akisini dogrula (ortam bagimli)
+
+## 2026-02-23 - Execute-Line Dogrulama Durumu
+
+### Biten Gorevler
+- [bitti] `execute_line` uzerinden `COLLISION ON/OFF` runtime akisi dogrulandi
+- [bitti] `execute_line` uzerinden `CREATE ASCII SPRITE` + `DRAW SPRITE` runtime akisi dogrulandi
+- [bitti] `CREATE ASCII SPRITE` icin iki legacy arguman sirasi destegi eklendi
+- [bitti] Yanlis `pdsxu_venv` auto-install akisina koruma eklendi
+
+### Sonraki Gorevler
+- [ ] `CREATE IMAGE SPRITE ... AS IMAGE` icin dosya-yok/dosya-var senaryolu kisa runtime kontrolu yap

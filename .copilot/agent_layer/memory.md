@@ -112,3 +112,14 @@
 	- `DRAW SPRITE ...` -> `DRAW_SPRITE`
 	- `COLLISION ON` -> `COLLISION_ON`
 	- `COLLISION OFF` -> `COLLISION_OFF`
+
+## 2026-02-23 - Execute-Line Runtime Dogrulama Kaydi
+- `pdsx_interpreter.py::_setup_virtual_environment` icine koruma eklendi:
+	- `PDSX_DISABLE_AUTO_DEP_INSTALL=1|true|yes` ile auto paket kontrolu atlanabilir.
+	- `pdsxu_venv` klasoru yoksa auto paket kontrolu atlanir (yanlis venv yoluna kurulum denemesi engellendi).
+- Legacy komutlar execute-line seviyesinde dogrulandi:
+	- `COLLISION ON/OFF` -> basarili (`True/False` donus)
+	- `CREATE ASCII SPRITE` + `DRAW SPRITE` -> basarili, sprite koordinat guncellemesi dogrulandi.
+- `CREATE ASCII SPRITE` uyumluluk wrapper'i iki arguman dizilimini kabul edecek sekilde genisletildi:
+	- `id, "chars", x, y`
+	- `id, x, y, "chars"`

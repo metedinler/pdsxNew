@@ -168,11 +168,21 @@ class PDSXInterpreter:
     def _setup_virtual_environment(self):
         """Virtual Environment Manager ile eksik paketleri kontrol et"""
         try:
+            if os.environ.get('PDSX_DISABLE_AUTO_DEP_INSTALL', '').strip() in ('1', 'true', 'TRUE', 'yes', 'YES'):
+                return
+
             # Bu noktada zaten sanal ortamdayız (main() kontrol etti)
             # Sadece eksik paketleri kontrol et ve cache'den kur
             from pdsx_commands.virtual_env_manager import VirtualEnvironmentManager
             
             project_dir = os.path.dirname(os.path.abspath(__file__))
+            legacy_venv_dir = os.path.join(project_dir, 'pdsxu_venv')
+
+            if not os.path.isdir(legacy_venv_dir):
+                if self.debug_mode:
+                    print(f"[DEBUG] Legacy venv bulunamadi, auto paket kontrolu atlandi: {legacy_venv_dir}")
+                return
+
             venv_manager = VirtualEnvironmentManager(project_dir=project_dir)
             
             # Eksik paketleri sessizce kontrol et ve kur

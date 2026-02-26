@@ -68,3 +68,9 @@
 - Graphics tarafinda compatibility wrapper eklenerek mevcut engine fonksiyonlarina kopru kuruldu.
 - Parse smoke test basarili; ancak interpreter import sirasinda ortamda eksik paket uyarilari goruldu (`pygame`, `windows-curses`) ve otomatik kurulum yolu yerel venv path hatasi verdi.
 - Bu paket uyarilari parse dogrulamasini engellemedi; runtime/GUI davranisi dogrulamasi icin ortam paketlerinin saglam kurulumu gerekir.
+
+## 2026-02-23 - Execute-Line ve Venv Koruma Notu
+- Auto paket kontrolu `pdsxu_venv` yokken calisiyordu ve yanlis path'e pip cagrisi yapiyordu; interpreter tarafinda koruma eklendi.
+- Bu degisiklik execute-line smoke testin gürültü/kilitlenme riskini azaltti.
+- Halen bilinen durum: bazi moduller import sirasinda eksik opsiyonel paket uyari metinleri basiyor (`nltk`, `GitPython`, `requests`, `flask`, `pygame`).
+- Fonksiyonel etki: legacy komutlar execute seviyesinde calisiyor; GUI/ileri ozelliklerde paket bagimliliklari ayrica ele alinmali.
