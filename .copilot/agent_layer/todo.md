@@ -154,3 +154,13 @@
 
 ### Sonraki Gorevler
 - [ ] `graphics_system.py` icin tip-anotasyon odakli kademeli temizlik plani cikar (Optional context imzalari oncelikli)
+
+## 2026-02-27 - Graphics Tip Temizligi Faz-1 Durumu
+
+### Biten Gorevler
+- [bitti] `graphics_system.py` uyumluluk metotlarinda `Optional context` gecisi
+- [bitti] `None context` icin `ctx` normalize akisi eklendi
+- [bitti] Hata sayisinda ilk dusus dogrulandi (405 -> 374)
+
+### Sonraki Gorevler
+- [ ] Faz-2: dosya genelinde `context: Dict[str, Any] = None` imzalarini toplu normalize et (davranis degistirmeden)

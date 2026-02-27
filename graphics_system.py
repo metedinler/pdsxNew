@@ -3,7 +3,7 @@ Graphics and GUI System Module for PDSX Interpreter
 QBasic-style grafik komutları ve terminal UI
 """
 
-from typing import List, Any, Dict, Tuple
+from typing import List, Any, Dict, Tuple, Optional
 import time
 import random
 import os
@@ -42,7 +42,7 @@ class GraphicsSystem(BaseCommand):
         "BRIGHTWHITE": 17
     }
     
-    def __init__(self, interpreter):
+    def __init__(self, interpreter: Any):
         super().__init__(interpreter)
         self.screen = None
         self.current_fg = "WHITE"
@@ -120,33 +120,31 @@ class GraphicsSystem(BaseCommand):
 
         raise PDSXCommandError("CREATE IMAGE SPRITE: uygun image sprite ID kalmadi (129-256)")
 
-    def _set_variable(self, name: str, value: Any, context: Dict[str, Any] = None):
-        if context is None:
-            context = getattr(self.interpreter, 'context', {})
+    def _set_variable(self, name: str, value: Any, context: Optional[Dict[str, Any]] = None):
+        ctx = context if context is not None else getattr(self.interpreter, 'context', {})
         if hasattr(self.interpreter, 'set_variable'):
             try:
                 self.interpreter.set_variable(name, value)
                 return
             except Exception:
                 pass
-        if 'global_vars' not in context:
-            context['global_vars'] = {}
-        context['global_vars'][name] = value
+        if 'global_vars' not in ctx:
+            ctx['global_vars'] = {}
+        ctx['global_vars'][name] = value
 
-    def _get_variable(self, name: str, context: Dict[str, Any] = None, default: Any = None) -> Any:
-        if context is None:
-            context = getattr(self.interpreter, 'context', {})
+    def _get_variable(self, name: str, context: Optional[Dict[str, Any]] = None, default: Any = None) -> Any:
+        ctx = context if context is not None else getattr(self.interpreter, 'context', {})
         if hasattr(self.interpreter, 'get_variable'):
             try:
                 return self.interpreter.get_variable(name)
             except Exception:
                 pass
-        if name in context.get('local_vars', {}):
-            return context['local_vars'][name]
-        if name in context.get('global_vars', {}):
-            return context['global_vars'][name]
-        if name in context.get('variables', {}):
-            return context['variables'][name]
+        if name in ctx.get('local_vars', {}):
+            return ctx['local_vars'][name]
+        if name in ctx.get('global_vars', {}):
+            return ctx['global_vars'][name]
+        if name in ctx.get('variables', {}):
+            return ctx['variables'][name]
         return default
 
     def _read_key_nonblocking(self) -> str:
@@ -199,8 +197,8 @@ class GraphicsSystem(BaseCommand):
         return value[0] if value else ""
 
     def _split_csv_quoted(self, text: str) -> List[str]:
-        parts = []
-        current = []
+        parts: List[str] = []
+        current: List[str] = []
         in_quotes = False
         quote_char = ''
 
@@ -226,7 +224,7 @@ class GraphicsSystem(BaseCommand):
 
         return parts
 
-    def cmd_create_image_sprite_compat(self, args: List[str], context: Dict[str, Any] = None):
+    def cmd_create_image_sprite_compat(self, args: List[str], context: Optional[Dict[str, Any]] = None):
         """Compatibility: CREATE IMAGE SPRITE id, "file", x, y [AS IMAGE]"""
         if not args:
             raise PDSXCommandError("CREATE IMAGE SPRITE: arguman gerekli")
@@ -240,14 +238,15 @@ class GraphicsSystem(BaseCommand):
         if len(parsed) < 4:
             raise PDSXCommandError("CREATE IMAGE SPRITE: id, image, x, y gerekli")
 
-        requested_id = int(self.evaluate_expression(parsed[0], context))
+        ctx = context if context is not None else getattr(self.interpreter, 'context', {})
+        requested_id = int(self.evaluate_expression(parsed[0], ctx))
         internal_id = self._map_legacy_image_sprite_id(requested_id)
         mapped = parsed[:]
         mapped[0] = str(internal_id)
-        self.cmd_sprite_load(mapped[:6], context)
+        self.cmd_sprite_load(mapped[:6], ctx)
         return requested_id
 
-    def cmd_create_ascii_sprite_compat(self, args: List[str], context: Dict[str, Any] = None):
+    def cmd_create_ascii_sprite_compat(self, args: List[str], context: Optional[Dict[str, Any]] = None):
         """Compatibility: CREATE ASCII SPRITE id, x, y, "chars""" 
         if not args:
             raise PDSXCommandError("CREATE ASCII SPRITE: arguman gerekli")
@@ -271,9 +270,10 @@ class GraphicsSystem(BaseCommand):
         else:
             normalized = [sprite_id, second, third, fourth]
 
-        return self.cmd_sprite_create_ascii(normalized[:6], context)
+        ctx = context if context is not None else getattr(self.interpreter, 'context', {})
+        return self.cmd_sprite_create_ascii(normalized[:6], ctx)
 
-    def cmd_draw_sprite_compat(self, args: List[str], context: Dict[str, Any] = None):
+    def cmd_draw_sprite_compat(self, args: List[str], context: Optional[Dict[str, Any]] = None):
         """Compatibility: DRAW SPRITE id, "file" AT x, y"""
         if not args:
             raise PDSXCommandError("DRAW SPRITE: arguman gerekli")
@@ -293,20 +293,21 @@ class GraphicsSystem(BaseCommand):
         if len(left_parts) < 1 or len(right_parts) < 2:
             raise PDSXCommandError("DRAW SPRITE: id ve x,y gerekli")
 
-        requested_id = int(self.evaluate_expression(left_parts[0], context))
+        ctx = context if context is not None else getattr(self.interpreter, 'context', {})
+        requested_id = int(self.evaluate_expression(left_parts[0], ctx))
         sprite_id = self._legacy_image_sprite_ids.get(requested_id, requested_id)
-        x = int(self.evaluate_expression(right_parts[0], context))
-        y = int(self.evaluate_expression(right_parts[1], context))
+        x = int(self.evaluate_expression(right_parts[0], ctx))
+        y = int(self.evaluate_expression(right_parts[1], ctx))
 
         sprite = self.sprite_manager.get_sprite(sprite_id)
         if sprite is None:
             if len(left_parts) >= 2:
-                image_path = str(self.evaluate_expression(left_parts[1], context)).strip('"\'')
+                image_path = str(self.evaluate_expression(left_parts[1], ctx)).strip('"\'')
                 if requested_id != sprite_id:
                     target_id = sprite_id
                 else:
                     target_id = self._map_legacy_image_sprite_id(requested_id)
-                self.cmd_sprite_load([str(target_id), f'"{image_path}"', str(x), str(y)], context)
+                self.cmd_sprite_load([str(target_id), f'"{image_path}"', str(x), str(y)], ctx)
                 self._legacy_image_sprite_ids[requested_id] = target_id
             else:
                 raise PDSXCommandError(f"DRAW SPRITE: sprite bulunamadi ({requested_id})")
@@ -317,16 +318,14 @@ class GraphicsSystem(BaseCommand):
 
         return requested_id
 
-    def cmd_collision_on(self, args: List[str], context: Dict[str, Any] = None):
-        if context is None:
-            context = getattr(self.interpreter, 'context', {})
-        context['__collision_enabled__'] = True
+    def cmd_collision_on(self, args: List[str], context: Optional[Dict[str, Any]] = None):
+        ctx = context if context is not None else getattr(self.interpreter, 'context', {})
+        ctx['__collision_enabled__'] = True
         return True
 
-    def cmd_collision_off(self, args: List[str], context: Dict[str, Any] = None):
-        if context is None:
-            context = getattr(self.interpreter, 'context', {})
-        context['__collision_enabled__'] = False
+    def cmd_collision_off(self, args: List[str], context: Optional[Dict[str, Any]] = None):
+        ctx = context if context is not None else getattr(self.interpreter, 'context', {})
+        ctx['__collision_enabled__'] = False
         return False
     
     def _register_commands(self):
@@ -1398,7 +1397,7 @@ class GraphicsSystem(BaseCommand):
     # PHASE 1: ADVANCED SPRITE MANAGER COMMANDS (24 Ekim 2025)
     # ============================================================================
     
-    def cmd_sprite_create_ascii(self, args: List[str], context: Dict[str, Any] = None):
+    def cmd_sprite_create_ascii(self, args: List[str], context: Optional[Dict[str, Any]] = None):
         """
         SPRITE CREATE ASCII - ASCII sprite oluştur
         
@@ -1419,14 +1418,15 @@ class GraphicsSystem(BaseCommand):
         if len(args) < 4:
             raise PDSXCommandError("SPRITE CREATE ASCII: sprite_id, x, y, chars gerekli")
         
-        sprite_id = int(self.evaluate_expression(args[0], context))
-        x = int(self.evaluate_expression(args[1], context))
-        y = int(self.evaluate_expression(args[2], context))
-        chars = str(self.evaluate_expression(args[3], context))
+        ctx = context if context is not None else getattr(self.interpreter, 'context', {})
+        sprite_id = int(self.evaluate_expression(args[0], ctx))
+        x = int(self.evaluate_expression(args[1], ctx))
+        y = int(self.evaluate_expression(args[2], ctx))
+        chars = str(self.evaluate_expression(args[3], ctx))
         
         # Optional parameters
-        layer = int(self.evaluate_expression(args[4], context)) if len(args) > 4 else 0
-        color = str(self.evaluate_expression(args[5], context)) if len(args) > 5 else None
+        layer = int(self.evaluate_expression(args[4], ctx)) if len(args) > 4 else 0
+        color = str(self.evaluate_expression(args[5], ctx)) if len(args) > 5 else None
         
         try:
             sprite = self.sprite_manager.create_ascii_sprite(
@@ -1444,7 +1444,7 @@ class GraphicsSystem(BaseCommand):
         except ValueError as e:
             raise PDSXCommandError(f"SPRITE CREATE ASCII: {e}")
     
-    def cmd_sprite_load(self, args: List[str], context: Dict[str, Any] = None):
+    def cmd_sprite_load(self, args: List[str], context: Optional[Dict[str, Any]] = None):
         """
         SPRITE LOAD - Image sprite yükle
         
@@ -1465,14 +1465,15 @@ class GraphicsSystem(BaseCommand):
         if len(args) < 4:
             raise PDSXCommandError("SPRITE LOAD: sprite_id, image_path, x, y gerekli")
         
-        sprite_id = int(self.evaluate_expression(args[0], context))
-        image_path = str(self.evaluate_expression(args[1], context)).strip('"\'')
-        x = int(self.evaluate_expression(args[2], context))
-        y = int(self.evaluate_expression(args[3], context))
+        ctx = context if context is not None else getattr(self.interpreter, 'context', {})
+        sprite_id = int(self.evaluate_expression(args[0], ctx))
+        image_path = str(self.evaluate_expression(args[1], ctx)).strip('"\'')
+        x = int(self.evaluate_expression(args[2], ctx))
+        y = int(self.evaluate_expression(args[3], ctx))
         
         # Optional parameters
-        layer = int(self.evaluate_expression(args[4], context)) if len(args) > 4 else 0
-        scale = float(self.evaluate_expression(args[5], context)) if len(args) > 5 else 1.0
+        layer = int(self.evaluate_expression(args[4], ctx)) if len(args) > 4 else 0
+        scale = float(self.evaluate_expression(args[5], ctx)) if len(args) > 5 else 1.0
         
         try:
             sprite = self.sprite_manager.load_image_sprite(

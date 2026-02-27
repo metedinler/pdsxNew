@@ -144,3 +144,13 @@
 	- `graphics_system.py` uzerindeki cok sayida kirmizi isaretin buyuk bolumu strict tip denetimi (Pylance/Pyright) kaynakli.
 	- Onemli tekrar eden desen: `context: Dict[...] = None` gibi imzalarda `Optional` eksikligi ve "partially unknown" tur uyarilari.
 	- Bu gorunumler compile/runtime kirilmasi anlamina gelmek zorunda degil; daha cok statik tip tutarliligi uyarisidir.
+
+	## 2026-02-27 - Graphics Tip Temizligi (Faz-1)
+	- `graphics_system.py` icinde dusuk riskli tip temizligi baslatildi.
+	- Uygulananlar:
+		- `Optional` importu eklendi.
+		- `__init__(interpreter)` -> `__init__(interpreter: Any)`.
+		- Kritik uyumluluk metotlarinda `context` tipleri `Optional[Dict[str, Any]]` yapildi.
+		- `_split_csv_quoted` icinde liste tipleri aciklandirildi.
+		- `Optional context` kullanan metotlarda `ctx` normalize edilerek `None` alt-index uyarilari giderildi.
+	- Diagnostik etkisi: `graphics_system.py` hata sayisi 405 -> 374 (yaklasik -31).
