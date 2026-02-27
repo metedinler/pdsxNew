@@ -306,6 +306,19 @@ Bu bolum PDSX kok projesi icin eklendi. Mevcut anlami degistirmez, kapsam genisl
 - `PDSXInterpreter._setup_virtual_environment` artik `pdsxu_venv` yoksa auto paket kontrolunu atliyor.
 - Opsiyonel bypass: `PDSX_DISABLE_AUTO_DEP_INSTALL=1`.
 - Etki: yanlis/olmayan legacy venv path'e otomatik pip denemesi ve gürültulu cikti engellenir.
+
+### Legacy Image Sprite ID Koprusu (2026-02-27)
+- Problem: `SpriteManager` image ID araligini `129-256` ile sinirliyor; legacy scriptler `CREATE IMAGE SPRITE 1...` gibi dusuk ID kullaniyor.
+- Cozum (`graphics_system.py`):
+  - `_legacy_image_sprite_ids` esleme tablosu eklendi.
+  - `_map_legacy_image_sprite_id(requested_id)` yardimcisi ile legacy ID -> ic image ID esleniyor.
+  - `cmd_create_image_sprite_compat` ic ID ile `cmd_sprite_load` cagirip legacy ID donuyor.
+  - `cmd_draw_sprite_compat` legacy ID ile cagrilsa da maplenmis ic sprite uzerinden pozisyon guncelliyor.
+
+### Runtime Sonucu
+- Dosya var senaryosu: `CREATE IMAGE SPRITE 1, "...", x, y AS IMAGE` -> basarili.
+- Dosya yok senaryosu: beklenen hata (`PDSXCommandError: Image file not found`).
+- Dogrulanan esleme: `1 -> 129`.
 - `oop_system`: bazi ileri komut metotlari `pass` durumunda (stub).
 - `advanced_types`: `TYPE/UNION` acilislarinda type-block flag yonetimi field routing icin kritik/kirilgan.
 

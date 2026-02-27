@@ -74,3 +74,10 @@
 - Bu degisiklik execute-line smoke testin gürültü/kilitlenme riskini azaltti.
 - Halen bilinen durum: bazi moduller import sirasinda eksik opsiyonel paket uyari metinleri basiyor (`nltk`, `GitPython`, `requests`, `flask`, `pygame`).
 - Fonksiyonel etki: legacy komutlar execute seviyesinde calisiyor; GUI/ileri ozelliklerde paket bagimliliklari ayrica ele alinmali.
+
+## 2026-02-27 - Image Sprite Uyum Notu
+- Legacy image komutlari dusuk ID ile geldiginde (`1..`) artik ic image araligina mapleniyor (`129..256`).
+- Risk notu: diger komutlar dogrudan `sprite_id` bekliyorsa legacy->internal map bilgisini bilmeyebilir; bu nedenle legacy uyumluluk komutlari uzerinden kullanimi korunmali.
+- Test edilen durumlar:
+	- dosya var -> basarili olusum ve draw
+	- dosya yok -> kontrollu hata (beklenen)

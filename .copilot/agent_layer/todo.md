@@ -135,3 +135,13 @@
 
 ### Sonraki Gorevler
 - [ ] `CREATE IMAGE SPRITE ... AS IMAGE` icin dosya-yok/dosya-var senaryolu kisa runtime kontrolu yap
+
+## 2026-02-27 - Image Sprite Runtime Durumu
+
+### Biten Gorevler
+- [bitti] `CREATE IMAGE SPRITE ... AS IMAGE` dosya-var runtime senaryosu dogrulandi
+- [bitti] `CREATE IMAGE SPRITE ... AS IMAGE` dosya-yok runtime hata senaryosu dogrulandi
+- [bitti] Legacy dusuk image sprite ID'leri ic image araligina maplenerek (`129-256`) calisma dogrulandi
+
+### Sonraki Gorevler
+- [ ] Legacy `DRAW SPRITE id AT x,y` (dosya argumansiz) kullanimlarini .pdsx oyun dosyalarinda tarayip uyum denetimi yap

@@ -54,6 +54,7 @@ class GraphicsSystem(BaseCommand):
         self.timer_start = time.time()
         self.color_pairs = {}
         self._pixel_buffer: Dict[Tuple[int, int], int] = {}
+        self._legacy_image_sprite_ids: Dict[int, int] = {}
         
         # PHASE 1: Sprite Manager (24 Ekim 2025)
         from .graphics.sprite_manager import SpriteManager
@@ -100,6 +101,24 @@ class GraphicsSystem(BaseCommand):
         self.particle_system = ParticleSystem(max_particles=10000)
         self.audio_system = AudioSystem()
         self.physics_engine = PhysicsEngine(gravity=(0, 980))
+
+    def _map_legacy_image_sprite_id(self, requested_id: int) -> int:
+        if 129 <= requested_id <= 256:
+            return requested_id
+
+        if requested_id in self._legacy_image_sprite_ids:
+            return self._legacy_image_sprite_ids[requested_id]
+
+        used_internal_ids = set(self._legacy_image_sprite_ids.values())
+        for candidate in range(129, 257):
+            if candidate in used_internal_ids:
+                continue
+            if self.sprite_manager.get_sprite(candidate) is not None:
+                continue
+            self._legacy_image_sprite_ids[requested_id] = candidate
+            return candidate
+
+        raise PDSXCommandError("CREATE IMAGE SPRITE: uygun image sprite ID kalmadi (129-256)")
 
     def _set_variable(self, name: str, value: Any, context: Dict[str, Any] = None):
         if context is None:
@@ -221,7 +240,12 @@ class GraphicsSystem(BaseCommand):
         if len(parsed) < 4:
             raise PDSXCommandError("CREATE IMAGE SPRITE: id, image, x, y gerekli")
 
-        return self.cmd_sprite_load(parsed[:6], context)
+        requested_id = int(self.evaluate_expression(parsed[0], context))
+        internal_id = self._map_legacy_image_sprite_id(requested_id)
+        mapped = parsed[:]
+        mapped[0] = str(internal_id)
+        self.cmd_sprite_load(mapped[:6], context)
+        return requested_id
 
     def cmd_create_ascii_sprite_compat(self, args: List[str], context: Dict[str, Any] = None):
         """Compatibility: CREATE ASCII SPRITE id, x, y, "chars""" 
@@ -269,7 +293,8 @@ class GraphicsSystem(BaseCommand):
         if len(left_parts) < 1 or len(right_parts) < 2:
             raise PDSXCommandError("DRAW SPRITE: id ve x,y gerekli")
 
-        sprite_id = int(self.evaluate_expression(left_parts[0], context))
+        requested_id = int(self.evaluate_expression(left_parts[0], context))
+        sprite_id = self._legacy_image_sprite_ids.get(requested_id, requested_id)
         x = int(self.evaluate_expression(right_parts[0], context))
         y = int(self.evaluate_expression(right_parts[1], context))
 
@@ -277,15 +302,20 @@ class GraphicsSystem(BaseCommand):
         if sprite is None:
             if len(left_parts) >= 2:
                 image_path = str(self.evaluate_expression(left_parts[1], context)).strip('"\'')
-                self.cmd_sprite_load([str(sprite_id), f'"{image_path}"', str(x), str(y)], context)
+                if requested_id != sprite_id:
+                    target_id = sprite_id
+                else:
+                    target_id = self._map_legacy_image_sprite_id(requested_id)
+                self.cmd_sprite_load([str(target_id), f'"{image_path}"', str(x), str(y)], context)
+                self._legacy_image_sprite_ids[requested_id] = target_id
             else:
-                raise PDSXCommandError(f"DRAW SPRITE: sprite bulunamadi ({sprite_id})")
+                raise PDSXCommandError(f"DRAW SPRITE: sprite bulunamadi ({requested_id})")
         else:
             sprite.x = x
             sprite.y = y
             sprite.visible = True
 
-        return sprite_id
+        return requested_id
 
     def cmd_collision_on(self, args: List[str], context: Dict[str, Any] = None):
         if context is None:

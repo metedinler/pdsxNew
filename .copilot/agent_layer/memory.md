@@ -123,3 +123,12 @@
 - `CREATE ASCII SPRITE` uyumluluk wrapper'i iki arguman dizilimini kabul edecek sekilde genisletildi:
 	- `id, "chars", x, y`
 	- `id, x, y, "chars"`
+
+## 2026-02-27 - CREATE IMAGE SPRITE Runtime Senaryo Kaydi
+- `CREATE IMAGE SPRITE ... AS IMAGE` icin iki runtime senaryo dogrulandi:
+	- Dosya var: basarili (komut donusu `1`)
+	- Dosya yok: beklenen sekilde `PDSXCommandError` (`Image file not found`)
+- Legacy image sprite ID koprusu guclendirildi:
+	- Legacy dusuk ID'ler (orn. `1`) ic image araligi `129-256`'ya mapleniyor.
+	- Runtime dogrulama: `legacy=1 -> internal=129`.
+	- `DRAW SPRITE` sonrasi koordinat guncellemesi dogrulandi (`x=40, y=12`).
