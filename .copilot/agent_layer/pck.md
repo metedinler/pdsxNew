@@ -319,6 +319,12 @@ Bu bolum PDSX kok projesi icin eklendi. Mevcut anlami degistirmez, kapsam genisl
 - Dosya var senaryosu: `CREATE IMAGE SPRITE 1, "...", x, y AS IMAGE` -> basarili.
 - Dosya yok senaryosu: beklenen hata (`PDSXCommandError: Image file not found`).
 - Dogrulanan esleme: `1 -> 129`.
+
+### Legacy DRAW SPRITE Tarama Sonucu (2026-02-27)
+- `**/*.pdsx` taramasinda `DRAW SPRITE` cagrilari bulundu; pratik kullanimlar dosya argumanli formda:
+  - `DRAW SPRITE id, "file" AT x, y`
+- Dosya argumansiz form (`DRAW SPRITE id AT x, y`) vakasi bulunmadi.
+- Sonuc: mevcut uyumluluk katmaninda ID mapping sonrasi sahadaki scriptler icin ek zorunlu yama gerektiren vaka tespit edilmedi.
 - `oop_system`: bazi ileri komut metotlari `pass` durumunda (stub).
 - `advanced_types`: `TYPE/UNION` acilislarinda type-block flag yonetimi field routing icin kritik/kirilgan.
 

@@ -81,3 +81,8 @@
 - Test edilen durumlar:
 	- dosya var -> basarili olusum ve draw
 	- dosya yok -> kontrollu hata (beklenen)
+
+## 2026-02-27 - Graphics Kirmizi Cizgi Notu
+- Dosyadaki toplu kirmizi cizgiler agirlikli olarak statik tip denetiminden (Pylance/Pyright strict) geliyor.
+- Runtime kirilma isareti olabilecek vakalar ayri test edildi; legacy sprite/collision akislarinda calisma dogrulandi.
+- Teknik borc onceligi: `context` parametrelerinde `Optional[Dict[str, Any]]` ve benzeri tip imza tutarliligi.

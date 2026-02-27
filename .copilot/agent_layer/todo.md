@@ -145,3 +145,12 @@
 
 ### Sonraki Gorevler
 - [ ] Legacy `DRAW SPRITE id AT x,y` (dosya argumansiz) kullanimlarini .pdsx oyun dosyalarinda tarayip uyum denetimi yap
+
+## 2026-02-27 - Legacy DRAW Tarama Durumu
+
+### Biten Gorevler
+- [bitti] `.pdsx` oyun dosyalarinda `DRAW SPRITE` kullanimlari tarandi
+- [bitti] `DRAW SPRITE id AT x,y` (dosya argumansiz) kullanim vakasi bulunmadi
+
+### Sonraki Gorevler
+- [ ] `graphics_system.py` icin tip-anotasyon odakli kademeli temizlik plani cikar (Optional context imzalari oncelikli)

@@ -132,3 +132,15 @@
 	- Legacy dusuk ID'ler (orn. `1`) ic image araligi `129-256`'ya mapleniyor.
 	- Runtime dogrulama: `legacy=1 -> internal=129`.
 	- `DRAW SPRITE` sonrasi koordinat guncellemesi dogrulandi (`x=40, y=12`).
+
+	## 2026-02-27 - Legacy DRAW SPRITE (Dosya Argumansiz) Tarama Kaydi
+	- Oyun `.pdsx` dosyalari tarandi (`**/*.pdsx`).
+	- `DRAW SPRITE` kullanimlari bulundu ancak hepsi dosya argumanli formda:
+		- `DRAW SPRITE id, "file" AT x, y`
+	- Dosya argumansiz riskli form (`DRAW SPRITE id AT x, y`) bulunmadi.
+	- Sonuc: ID mapping sonrasi pratik riskin bu cagri bicimi tarafinda aktif vaka gorulmedi.
+
+	## 2026-02-27 - Graphics Kirmizi Cizgi Tani Notu
+	- `graphics_system.py` uzerindeki cok sayida kirmizi isaretin buyuk bolumu strict tip denetimi (Pylance/Pyright) kaynakli.
+	- Onemli tekrar eden desen: `context: Dict[...] = None` gibi imzalarda `Optional` eksikligi ve "partially unknown" tur uyarilari.
+	- Bu gorunumler compile/runtime kirilmasi anlamina gelmek zorunda degil; daha cok statik tip tutarliligi uyarisidir.
